@@ -1,0 +1,11 @@
+/target
+**/*.rs.bk
+*iml
+*ipr
+*iws
+src/core_client/*
+!src/core_client/mod.rs
+src/storage_client/*
+!src/storage_client/mod.rs
+src/auth_client/*
+!src/auth_client/mod.rs
