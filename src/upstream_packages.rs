@@ -27,18 +27,12 @@ struct Version {
 pub async fn latest_version_for_package(package_name: String) -> Package {
   let url = format!("https://crates.io/api/v1/crates/{}/versions", package_name);
 
-  let resp = reqwest::get(url.as_str())
-      .await
-      .map(|response| response.json::<Versions>());
+  let resp = surf::get(url.as_str())
+      .recv_json::<Versions>()
+      .await;
   let unknown = Package { name: package_name.clone(), version: format!("0.0.0") };
   match resp {
-    Ok(v) => match v.await {
-      Ok(versions) => versions.latest().unwrap_or(unknown.clone()),
-      Err(err) => {
-        println!("Error while fetching versions for {} {:?}", package_name, err);
-        unknown.clone()
-      }
-    },
+    Ok(versions) =>  versions.latest().unwrap_or(unknown.clone()),
     Err(err) => {
       println!("Error while fetching versions for {} {:?}", package_name, err);
       unknown.clone()
